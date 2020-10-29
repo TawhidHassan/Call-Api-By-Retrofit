@@ -39,7 +39,10 @@ public class MainActivity extends AppCompatActivity {
 //         getPosts();
         
         //get comments
-        getComments();
+//        getComments();
+
+        //create Posts
+        createPost();
     }
 
 
@@ -48,17 +51,17 @@ public class MainActivity extends AppCompatActivity {
 
         //======1st way with parameters==========///
 //        Call<List<Post>> call=jsonPlaceHolderApi.getPosts(new Integer[]{1,2,3},null,new );// if dont need sort and order query
-//        Call<List<Post>> call=jsonPlaceHolderApi.getPosts(new Integer[]{},"id","desc");
+        Call<List<Post>> call=jsonPlaceHolderApi.getPosts(new Integer[]{},"id","desc");
         //1st way with parameters///
 
 
-        //2nd way call parameters
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("userId", "1");//map can not call multiple value thats why we can not call specified user id post so we use 1st way to call multiple user post
-        parameters.put("_sort", "id");
-        parameters.put("_order", "desc");
-        Call<List<Post>> call = jsonPlaceHolderApi.getPosts(parameters);
-        //2nd way call parameters
+        //2nd way call parameters//
+//        Map<String, String> parameters = new HashMap<>();
+//        parameters.put("userId", "1");//map can not call multiple value thats why we can not call specified user id post so we use 1st way to call multiple user post
+//        parameters.put("_sort", "id");
+//        parameters.put("_order", "desc");
+//        Call<List<Post>> call = jsonPlaceHolderApi.getPosts(parameters);
+        //2nd way call parameters//
 
 
         call.enqueue(new Callback<List<Post>>() {
@@ -127,4 +130,58 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
+    private void createPost() {
+
+        //1st way
+//        Post post=new Post(23,"New title","New Text");
+//        Call<Post> call=jsonPlaceHolderApi.createPost(post);
+        //1st way
+
+        //2nd way
+//        Call<Post> call=jsonPlaceHolderApi.createPost(24,"new Title","New Text");
+        //2nd way
+
+        // 3rd way
+        Map<String, String> fields = new HashMap<>();
+        fields.put("userId", "25");
+        fields.put("title", "New Title");
+        fields.put("body", "New Title");
+        Call<Post> call = jsonPlaceHolderApi.createPost(fields);
+        //3rd way
+
+        call.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                if (!response.isSuccessful()){
+                    textViewResult.setText("code:"+response.code());
+                    return;
+                }
+
+                Post postResponse=response.body();
+                String content="";
+                content += "Code: " + response.code() + "\n";
+                content += "ID: " + postResponse.getId() + "\n";
+                content += "User ID: " + postResponse.getUserId() + "\n";
+                content += "Title: " + postResponse.getTitle() + "\n";
+                content += "Text: " + postResponse.getText() + "\n\n";
+                textViewResult.append(content);
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+                textViewResult.setText(t.getMessage());
+            }
+        });
+    }
+
+
+
+
+
+
+
+
 }
